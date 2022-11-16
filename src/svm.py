@@ -69,9 +69,18 @@ class SVM:
 		scores=self(x)
 		
 		# compute loss
+		# TODO: add in L2 regularization term
 		ys=-np.ones(scores.shape)
 		ys[xi, y]=1
-		loss=self.reg*np.mean(np.maximum(0, 1-ys*scores)) #currently doesn't factor in L2 reg
+		svm_scores=np.maximum(0, 1-ys*scores)
+		loss=self.reg*np.mean(svm_scores) 
+
+		# compute gradient
+		# TODO: add in L2 regularization term
+		mask=(svm_scores==0)
+		grad=-ys
+		grad[mask]=0
+		grad=self.reg*x.T@grad
 	
 	def step():
 		""" use this for the optimization step """
