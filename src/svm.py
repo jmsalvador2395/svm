@@ -7,10 +7,10 @@ class SVM:
 		"""
 		initialize the weights
 
-		:param C:		number of classes
-		:param dim:		dimensionality of the input
-		:param loc:		arguement for initialization using numpy.random.normal()
-		:param scale:	standard deviation for initialization using numpy.random.normal()
+		:param C: number of classes
+		:param dim:	dimensionality of the input
+		:param loc:	arguement for initialization using numpy.random.normal()
+		:param scale: standard deviation for initialization using numpy.random.normal()
 		"""
 
 		# save dimensionality for reshaping input
@@ -23,7 +23,7 @@ class SVM:
 		"""
 		generates classifier scores
 
-		:param x:	the input data
+		:param x: the input data
 		"""
 
 		# get number of samples
@@ -36,6 +36,24 @@ class SVM:
 		))
 
 		return xpad@self.w
+
+	def predict(x):
+		""" 
+		returns the label predictions
+
+		:param x: the input data
+		"""
+		scores=self(x)
+		return np.argmax(scores, axis=-1)
+
+	def loss(self, scores, y):
+		""" this is used for calculating the loss function """
+		pass
+	
+	def step():
+		""" use this for the optimization step """
+		pass
+	
 
 if __name__ == '__main__':
 	""" main function for testing class implementation """
