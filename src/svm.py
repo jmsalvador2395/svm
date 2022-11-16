@@ -8,8 +8,8 @@ class SVM:
 		initialize the weights
 
 		:param C: number of classes
-		:param dim:	dimensionality of the input
-		:param loc:	arguement for initialization using numpy.random.normal()
+		:param dim: dimensionality of the input
+		:param loc: arguement for initialization using numpy.random.normal()
 		:param scale: standard deviation for initialization using numpy.random.normal()
 		"""
 
@@ -18,6 +18,9 @@ class SVM:
 
 		# initialize weights. use +1 for the bias weights
 		self.w=np.random.normal(loc=loc, scale=scale, size=(dim+1, C))
+
+		# set bias weights to 0
+		self.w[-1, :]=0
 	
 	def __call__(self, x):
 		"""
