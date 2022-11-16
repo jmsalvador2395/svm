@@ -3,15 +3,22 @@ import numpy as np
 class SVM:
 	""" implementation of the SVM classifier """
 
-	def __init__(self, C, dim, loc=0, scale=1):
+	def __init__(self, C, dim, reg=1, lr=1, loc=0, scale=1):
 		"""
 		initialize the weights
 
 		:param C: number of classes
 		:param dim: dimensionality of the input
+		:param reg: the regularization term
 		:param loc: arguement for initialization using numpy.random.normal()
 		:param scale: standard deviation for initialization using numpy.random.normal()
 		"""
+
+		# save the learning rate
+		self.lr=lr
+
+		# save the regularization term
+		self.reg=reg
 
 		# save dimensionality for reshaping input
 		self.dim=dim
@@ -49,9 +56,22 @@ class SVM:
 		scores=self(x)
 		return np.argmax(scores, axis=-1)
 
-	def loss(self, scores, y):
+	def loss(self, x, y):
 		""" this is used for calculating the loss function """
-		pass
+
+		# get the number of samples
+		N=x.shape[0]
+
+		# use this to index the scores
+		xi=range(N)
+
+		# calculate scores
+		scores=self(x)
+		
+		# compute loss
+		ys=-np.ones(scores.shape)
+		ys[xi, y]=1
+		loss=self.reg*np.mean(np.maximum(0, 1-ys*scores)) #currently doesn't factor in L2 reg
 	
 	def step():
 		""" use this for the optimization step """
