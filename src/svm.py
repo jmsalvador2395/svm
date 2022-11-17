@@ -62,6 +62,13 @@ class SVM:
 		# get the number of samples
 		N=x.shape[0]
 
+		# reshape x to an Nxdim matrix and then pad with 1s
+		xpad=np.hstack((
+			x.reshape(N, self.dim),
+			np.ones(N)[:, None]
+		))
+
+
 		# use this to index the scores
 		xi=range(N)
 
@@ -80,11 +87,13 @@ class SVM:
 		mask=(svm_scores==0)
 		grad=-ys
 		grad[mask]=0
-		grad=self.reg*x.T@grad
+		grad=self.reg*xpad.T@grad
+
+		return loss, grad
 	
-	def step():
+	def optim_step(self, grad):
 		""" use this for the optimization step """
-		pass
+		self.w-=self.lr*grad
 	
 
 if __name__ == '__main__':
