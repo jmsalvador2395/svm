@@ -15,3 +15,10 @@ Setup your runtime environment by following the instructions
 1. run `source ./env/bin/activate`
 1. run `pip install -r requirements.txt`
 1. now you should be able to execute the code
+
+
+# Usage Instructions
+### TODO make these instructions better
+To **train** the model call `python train.py.
+
+Refer to the source code comments of svm.py for usage after training
