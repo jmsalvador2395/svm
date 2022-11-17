@@ -7,7 +7,7 @@ from itertools import product
 
 import pdb
 
-def get_dataset(ds_name='emnist', data_dir='../datasets', batch_size=16):
+def get_dataset(ds_name='mnist', data_dir='../datasets', batch_size=16):
 	"""
 	downloads the dataset and returns a dataloader for batching
 
@@ -22,7 +22,7 @@ def get_dataset(ds_name='emnist', data_dir='../datasets', batch_size=16):
 	
 	# download or read in dataset
 	ds = load_dataset(
-		'mnist',
+		ds_name,
 		data_dir=data_dir,
 	).with_format('numpy')
 
@@ -39,9 +39,15 @@ def train():
 	C = 10
 	dim = 784
 	lr = 1e-2
-	model = SVM(C, dim, lr=lr)
 	batch_size = 2**12
 	num_epochs = 15
+
+	# instantiate model
+	model = SVM(
+		C,
+		dim,
+		lr=lr
+	)
 
 	# get dataset
 	train_data, test_data = get_dataset(batch_size=batch_size)

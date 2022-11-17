@@ -73,7 +73,6 @@ class SVM:
 			np.ones(N)[:, None]
 		))
 
-
 		# use this to index the scores
 		xi=range(N)
 
