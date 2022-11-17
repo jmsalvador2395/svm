@@ -38,10 +38,10 @@ def train():
 	# hard-coded parameters. should c
 	C = 10
 	dim = 784
-	lr=1e-4
+	lr = 1e-2
 	model = SVM(C, dim, lr=lr)
-	batch_size=2**12
-	num_epochs=10
+	batch_size = 2**12
+	num_epochs = 15
 
 	# get dataset
 	train_data, test_data = get_dataset(batch_size=batch_size)
@@ -61,5 +61,7 @@ def train():
 
 			# optimizer step
 			model.optim_step(grad)
+	
+	return model
 if __name__ == '__main__':
 	train()

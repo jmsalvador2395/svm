@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.linalg import norm
 
 class SVM:
 	""" implementation of the SVM classifier """
@@ -31,9 +32,11 @@ class SVM:
 	
 	def __call__(self, x):
 		"""
-		generates classifier scores
+		generates classifier scores. computes x@w+b
 
 		:param x: the input data
+
+		:return: prediction scores
 		"""
 
 		# get number of samples
@@ -52,6 +55,8 @@ class SVM:
 		returns the label predictions
 
 		:param x: the input data
+
+		:return: a numpy array of the predicted labels. size (N, )
 		"""
 		scores=self(x)
 		return np.argmax(scores, axis=-1)
@@ -76,23 +81,25 @@ class SVM:
 		scores=self(x)
 		
 		# compute loss
-		# TODO: add in L2 regularization term
 		ys=-np.ones(scores.shape)
 		ys[xi, y]=1
 		svm_scores=np.maximum(0, 1-ys*scores)
-		loss=self.reg*np.mean(svm_scores) 
+		loss=np.mean(svm_scores)+self.reg*norm(self.w, ord=2)
 
 		# compute gradient
-		# TODO: add in L2 regularization term
 		mask=(svm_scores==0)
 		grad=-ys
 		grad[mask]=0
-		grad=self.reg*xpad.T@grad
+		grad=xpad.T@grad/grad.size+self.reg*2*self.w
 
 		return loss, grad
 	
 	def optim_step(self, grad):
-		""" use this for the optimization step """
+		"""
+		use this for the optimization step. Implementation is SGD
+
+		:param grad: the gradient of the current training step
+		"""
 		self.w-=self.lr*grad
 	
 
