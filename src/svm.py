@@ -4,7 +4,7 @@ from numpy.linalg import norm
 class SVM:
 	""" implementation of the SVM classifier """
 
-	def __init__(self, C, dim, reg=1, lr=1, loc=0, scale=1):
+	def __init__(self, C, dim, shape=(28, 28), reg=1, lr=1, loc=0, scale=1):
 		"""
 		initialize the weights
 
@@ -15,6 +15,7 @@ class SVM:
 		:param scale: standard deviation for initialization using numpy.random.normal()
 		"""
 
+
 		# save the learning rate
 		self.lr=lr
 
@@ -23,6 +24,9 @@ class SVM:
 
 		# save dimensionality for reshaping input
 		self.dim=dim
+
+		# save the shape of the data
+		self.shape=shape
 
 		# initialize weights. use +1 for the bias weights
 		self.w=np.random.normal(loc=loc, scale=scale, size=(dim+1, C))
@@ -61,8 +65,16 @@ class SVM:
 		scores=self(x)
 		return np.argmax(scores, axis=-1)
 
-	def loss(self, x, y):
-		""" this is used for calculating the loss function """
+	def loss(self, x, y=None):
+		"""
+		this is used for calculating the loss function
+		
+		:param x: the input data
+		:param y: the labels for the input data
+
+		:return loss: the output of the loss function
+		:return grad: the weight gradient
+		"""
 
 		# get the number of samples
 		N=x.shape[0]
@@ -78,7 +90,13 @@ class SVM:
 
 		# calculate scores
 		scores=self(x)
-		
+
+		preds=np.argmax(scores, axis=-1)
+
+		# compute accuracy
+		acc=np.mean(preds==y)
+		#acc=np.sum(preds==y)
+
 		# compute loss
 		ys=-np.ones(scores.shape)
 		ys[xi, y]=1
@@ -91,7 +109,7 @@ class SVM:
 		grad[mask]=0
 		grad=xpad.T@grad/grad.size+self.reg*2*self.w
 
-		return loss, grad
+		return loss, grad, acc
 	
 	def optim_step(self, grad):
 		"""
@@ -100,6 +118,10 @@ class SVM:
 		:param grad: the gradient of the current training step
 		"""
 		self.w-=self.lr*grad
+
+	def w_norm(ord=2):
+		"""return the sum of norms of the weight vectors"""
+		return np.linalg.norm(self.w, ord=2)
 	
 
 if __name__ == '__main__':
