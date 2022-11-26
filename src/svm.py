@@ -1,10 +1,11 @@
 import numpy as np
 from numpy.linalg import norm
+from .utils import get_project_root
 
 class SVM:
 	""" implementation of the SVM classifier """
 
-	def __init__(self, C, dim, shape=(28, 28), reg=1, lr=1, loc=0, scale=1):
+	def __init__(self, C=10, dim=784, shape=(28, 28), reg=1, lr=1, loc=0, scale=1, decay=1):
 		"""
 		initialize the weights
 
@@ -18,6 +19,7 @@ class SVM:
 
 		# save the learning rate
 		self.lr=lr
+		self.lr_decayed=lr
 
 		# save the regularization term
 		self.reg=reg
@@ -27,6 +29,9 @@ class SVM:
 
 		# save the shape of the data
 		self.shape=shape
+
+		# save the learning rate decay
+		self.decay=decay
 
 		# initialize weights. use +1 for the bias weights
 		self.w=np.random.normal(loc=loc, scale=scale, size=(dim+1, C))
@@ -54,7 +59,7 @@ class SVM:
 
 		return xpad@self.w
 
-	def predict(x):
+	def predict(self, x):
 		""" 
 		returns the label predictions
 
@@ -117,11 +122,40 @@ class SVM:
 
 		:param grad: the gradient of the current training step
 		"""
-		self.w-=self.lr*grad
+		self.w-=self.lr_decayed*grad
+		self.lr_decayed = max(self.lr_decayed*self.decay, 1e-3)
 
 	def w_norm(ord=2):
 		"""return the sum of norms of the weight vectors"""
 		return np.linalg.norm(self.w, ord=2)
+	
+	def save_checkpoint(self, save_name='weights.npy', save_dir='default'):
+		""" loads pre-trained weights of the model """
+
+		print('saving checkpoint')
+
+		# if default get the project root directory
+		if save_dir == 'default':
+			save_dir = get_project_root() + '/checkpoints'
+		target = save_dir + '/' + save_name
+		Path(target).mkdir(parents=True, exist_ok=True)
+		np.save(target, self.w, allow_pickle=False)
+
+		print('done')
+	
+	def load_checkpoint(self, save_name='weights.npy', save_dir='default'):
+
+		print('loading checkpoint')
+
+		# if default get the project root directory
+		if save_dir == 'default':
+			save_dir = get_project_root() + '/checkpoints'
+
+		# build the full path
+		target = save_dir + '/' + save_name
+		self.w = np.load(target)
+
+		print('done')
 	
 
 if __name__ == '__main__':

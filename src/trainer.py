@@ -1,7 +1,7 @@
 import numpy as np
 from pathlib import Path
 from torch.utils.data import DataLoader
-from src.svm import SVM
+from .svm import SVM
 from itertools import product
 import datasets
 from datasets import load_dataset
@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import pdb
 
-def get_dataset(ds_name='mnist', data_dir='../datasets', batch_size=16):
+def get_dataloaders(ds_name='mnist', data_dir='./datasets', batch_size=16):
 	"""
 	downloads the dataset and returns a dataloader for batching
 
@@ -25,10 +25,11 @@ def get_dataset(ds_name='mnist', data_dir='../datasets', batch_size=16):
 	# download or read in dataset
 	ds = load_dataset(
 		ds_name,
-		data_dir=data_dir,
+		cache_dir = data_dir
 	).with_format('numpy')
 
 	return  (
+		ds,
 		DataLoader(ds['train'], batch_size=batch_size),
 		DataLoader(ds['test'], batch_size=batch_size),
 	)
@@ -53,25 +54,20 @@ def evaluate(model, data):
 
 
 
-def train(num_epochs=15):
+def train(model=None, C=10, dim=784, lr=.01, batch_size=4096, num_epochs=15):
 	""" instantiate and train an SVM classifier """
 
-	# TODO make these arguments
-	# hard-coded parameters. should c
-	C = 10
-	dim = 784
-	lr = 1e-2
-	batch_size = 2**12
-
 	# instantiate model
-	model = SVM(
-		C,
-		dim,
-		lr=lr
-	)
+	if model is None:
+		model = SVM(
+			C,
+			dim,
+			lr=lr,
+			decay=.995
+		)
 
 	# get dataset
-	train_data, test_data = get_dataset(batch_size=batch_size)
+	_, train_data, test_data = get_dataloaders(batch_size=batch_size)
 
 	history={
 		'train_loss':[],
@@ -92,7 +88,10 @@ def train(num_epochs=15):
 			bar.update()
 
 			# split into data and labels. 
-			data, labels = (batch['image'].numpy(), batch['label'].numpy())
+			data, labels = (
+				batch['image'].detach().clone().numpy(), 
+				batch['label'].detach().clone().numpy()
+			)
 				
 			# compute loss
 			loss, grad, acc = model.loss(data, labels)
@@ -112,10 +111,11 @@ def train(num_epochs=15):
 			
 			# update progress bar
 			bar.set_postfix({
-				'train_loss':history['train_loss'][-1],
-				'test_loss':history['test_loss'][-1],
-				'train_acc':history['train_acc'][-1],
-				'test_acc':history['test_acc'][-1],
+				'loss_trn':history['train_loss'][-1],
+				'loss_tst':history['test_loss'][-1],
+				'acc_trn':history['train_acc'][-1],
+				'acc_tst':history['test_acc'][-1],
+				'lr':model.lr_decayed,
 				'||w||':np.linalg.norm(history['w'][-1], ord=2),
 			})
 			
