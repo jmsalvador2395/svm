@@ -5,7 +5,7 @@ from .svm import SVM
 from itertools import product
 import datasets
 from datasets import load_dataset
-from tqdm import tqdm
+from tqdm.notebook import tqdm
 
 import pdb
 
