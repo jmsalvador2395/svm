@@ -22,10 +22,10 @@ Setup your python environment by following the instructions
 
 #### With Anaconda
 1. change to the project directory. (the env.yml file is in the project root)
-1. run `conda env create -f env.yml
+1. run `conda env create -f env.yml`
 
 # Usage Instructions
 Using the environment built from the instructions above, start your jupyter notebook server by calling  
-jupyter notebook` in the project root.  
+`jupyter notebook` in the project root.  
 
 Then you can follow the jupyter notebook to train a model, generate graphs from training, and then visualize the weights of the model
