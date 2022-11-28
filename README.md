@@ -1,6 +1,6 @@
 # The SVM Classifier.
 
-This is an implementation of the SVM classifier
+This is an implementation of the SVM classifier on the MNIST dataset
 \
 \
 Use [this](https://www.robots.ox.ac.uk/~az/lectures/ml/lect2.pdf) resource for a brief introduction  
@@ -8,17 +8,24 @@ Use [this](https://www.robots.ox.ac.uk/~az/lectures/ml/matlab2.pdf) resource for
 
 
 # Setup Instructions
-This implementation is developed in python 3.10.6.  
-Setup your runtime environment by following the instructions
-1. Change to the project directory. (the next commands require you to be here)
-1. run `virtualenv env --python=<path to python 3.10 executable>`
-1. run `source ./env/bin/activate`
-1. run `pip install -r requirements.txt`
-1. now you should be able to execute the code
+This implementation is developed in python 3.9.15
+Setup your python environment by following the instructions
 
+#### With virtualenv
+1. Change to the project directory. (the next commands require you to be here)
+1. run `virtualenv env --python=<path to python 3.9 executable>`
+1. run `source ./env/bin/activate`
+1. run the bash script `pip_installs` or follow the last 2 steps. (they do the same thing)
+1. run `pip install -r requirements.txt`
+1. run `pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116`
+
+
+#### With Anaconda
+1. change to the project directory. (the env.yml file is in the project root)
+1. run `conda env create -f env.yml
 
 # Usage Instructions
-### TODO make these instructions better
-To **train** the model call `python train.py.
+Using the environment built from the instructions above, start your jupyter notebook server by calling  
+jupyter notebook` in the project root.  
 
-Refer to the source code comments of svm.py for usage after training
+Then you can follow the jupyter notebook to train a model, generate graphs from training, and then visualize the weights of the model
