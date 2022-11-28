@@ -28,4 +28,4 @@ Setup your python environment by following the instructions
 Using the environment built from the instructions above, start your jupyter notebook server by calling  
 `jupyter notebook` in the project root.  
 
-Then you can follow the jupyter notebook to train a model, generate graphs from training, and then visualize the weights of the model
+Then you can follow the jupyter notebook `svm_example.ipynb` to train a model, generate graphs from training, and then visualize the weights of the model
