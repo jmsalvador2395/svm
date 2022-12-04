@@ -130,7 +130,7 @@ class SVM:
 		self.w-=self.lr_decayed*grad
 		self.lr_decayed = max(self.lr_decayed*self.decay, 1e-3)
 
-	def w_norm(ord=2):
+	def w_norm(self, ord=2):
 		"""return the sum of norms of the weight vectors"""
 		return np.linalg.norm(self.w, ord=2)
 	
