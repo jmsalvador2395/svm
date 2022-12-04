@@ -9,7 +9,7 @@ from tqdm.notebook import tqdm
 
 import pdb
 
-def get_dataloaders(ds_name='mnist', data_dir='./datasets', batch_size=16):
+def get_dataloaders(ds_name='mnist', data_dir='./datasets', batch_size=16, get_mean=False):
 	"""
 	downloads the dataset and returns a dataloader for batching
 
@@ -25,9 +25,23 @@ def get_dataloaders(ds_name='mnist', data_dir='./datasets', batch_size=16):
 	# download or read in dataset
 	ds = load_dataset(
 		ds_name,
-		cache_dir = data_dir
+		cache_dir = data_dir,
+		keep_in_memory=True
 	).with_format('numpy')
 
+	# zero mean procedure. only computes mean based of training set
+	if get_mean:
+		new_ds = {split : {'image' : [], 'label' : []} for split in ds.keys()}
+		mean_x = np.mean(np.array(
+			[sample['image'] for sample in ds['train']]
+		), dtype=np.float32)
+
+		return  (
+			ds,
+			mean_x,
+			DataLoader(ds['train'], batch_size=batch_size),
+			DataLoader(ds['test'], batch_size=batch_size),
+		)
 	return  (
 		ds,
 		DataLoader(ds['train'], batch_size=batch_size),
@@ -54,7 +68,7 @@ def evaluate(model, data):
 
 
 
-def train(model=None, C=10, dim=784, lr=.01, batch_size=4096, num_epochs=15):
+def train(model=None, C=10, dim=784, lr=.01, decay=.995, reg=1, batch_size=4096, num_epochs=15, mean_x=None):
 	""" instantiate and train an SVM classifier """
 
 	# instantiate model
@@ -63,7 +77,9 @@ def train(model=None, C=10, dim=784, lr=.01, batch_size=4096, num_epochs=15):
 			C,
 			dim,
 			lr=lr,
-			decay=.995
+			decay=decay,
+			reg=reg,
+			mean_x=mean_x,
 		)
 
 	# get dataset

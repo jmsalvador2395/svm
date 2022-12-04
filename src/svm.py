@@ -5,7 +5,7 @@ from .utils import get_project_root
 class SVM:
 	""" implementation of the SVM classifier """
 
-	def __init__(self, C=10, dim=784, shape=(28, 28), reg=1, lr=1, loc=0, scale=1, decay=1):
+	def __init__(self, C=10, dim=784, shape=(28, 28), reg=1, lr=1, loc=0, scale=1, decay=1, mean_x=None):
 		"""
 		initialize the weights
 
@@ -38,6 +38,9 @@ class SVM:
 
 		# set bias weights to 0
 		self.w[-1, :]=0
+
+		# sets the mean of the data
+		self.mean_x = mean_x
 	
 	def __call__(self, x):
 		"""
@@ -50,6 +53,8 @@ class SVM:
 
 		# get number of samples
 		N=x.shape[0]
+		if self.mean_x:
+			N-=self.mean_x
 
 		# reshape x to an Nxdim matrix and then pad with 1s
 		xpad=np.hstack((
